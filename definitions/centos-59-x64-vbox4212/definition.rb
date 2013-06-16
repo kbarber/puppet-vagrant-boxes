@@ -4,8 +4,12 @@ Veewee::Session.declare({
   :disk_size => '10140',
   :disk_format => 'VDI',
   :hostiocache => 'off',
-  :ioapic => 'on',
-  :pae => 'on',
+  :virtualbox => {
+    :vm_options => [
+      "pae" => "on",
+      "ioapic" => "on",
+    ],
+  },
   :os_type_id => 'RedHat',
   :iso_file => "CentOS-5.9-x86_64-netinstall.iso",
   :iso_src => "http://mirrors.kernel.org/centos/5.9/isos/x86_64/CentOS-5.9-x86_64-netinstall.iso",
