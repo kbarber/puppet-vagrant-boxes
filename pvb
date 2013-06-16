@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'thor'
+require 'fileutils'
+
+module Pvb; end
+
+class Pvb::Cli < Thor
+  desc "build VIRT", "build image"
+  option :nocm, :type => :boolean, :desc => "Do not install configuration management tools"
+  def build(virt)
+    puts "Building #{virt} ..."
+
+    FileUtils.chdir "templates/#{virt}" do
+      system("packer build -only=virtualbox --force template.json")
+    end
+
+    #template_name += "-nocm" if options[:nocm]
+  end
+end
+
+Pvb::Cli.start(ARGV)

@@ -3,5 +3,6 @@
 .ruby-version
 .rbenv-gemsets
 .bundle
-vendor
+vendor/
 Gemfile.lock
+packer_cache

@@ -1,3 +1,3 @@
 source "http://rubygems.org"
 
-gem 'veewee', :git => 'git://github.com/jedi4ever/veewee'
+gem 'thor', '~> 0.18.1'
