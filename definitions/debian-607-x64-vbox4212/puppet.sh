@@ -4,4 +4,4 @@ dpkg -i puppetlabs-release-squeeze.deb
 apt-get update
 
 # Install puppet/facter
-apt-get install puppet facter
+apt-get install -y puppet facter
