@@ -7,16 +7,13 @@ require 'fileutils'
 module Pvb; end
 
 class Pvb::Cli < Thor
-  desc "build VIRT", "build image"
-  option :nocm, :type => :boolean, :desc => "Do not install configuration management tools"
-  def build(virt)
-    puts "Building #{virt} ..."
+  desc "build BOX", "build image"
+  def build(box)
+    puts "Building #{box} ..."
 
-    FileUtils.chdir "templates/#{virt}" do
+    FileUtils.chdir "templates/#{box}" do
       system("packer build -only=virtualbox --force template.json")
     end
-
-    #template_name += "-nocm" if options[:nocm]
   end
 end
 
