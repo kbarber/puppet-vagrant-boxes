@@ -32,6 +32,5 @@ UseDNS no
 # disable gem docs
 echo "gem: --no-ri --no-rdoc" >/etc/gemrc
 
-# install chef and puppet
-gem install chef
+# install puppet
 gem install puppet

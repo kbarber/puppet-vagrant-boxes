@@ -12,7 +12,6 @@
         "scripts/virtualbox.sh",
         "scripts/vagrant.sh",
         "scripts/ruby.sh",
-        "scripts/add_chef.sh",
         "scripts/add_puppet.sh",
         "scripts/add_vim.sh",
         "scripts/cron.sh",
@@ -49,8 +48,7 @@
         "vagrant<enter><wait><wait>",
         "/etc/init.d/sshd start<enter><wait>"
       ],
-      "boot_wait": "10s",
-      "disk_size": 20280,
+      "disk_size": 81920,
       "guest_os_type": "Gentoo_64",
       "iso_url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/20131010/install-amd64-minimal-20131010.iso",
       "ssh_username": "root",
@@ -61,18 +59,8 @@
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
       "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "1024"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          2
-        ]
+        [ "modifyvm", "{{.Name}}", "--memory", "1024" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", 2 ]
       ]
     },
     {
@@ -88,8 +76,7 @@
         "vagrant<enter><wait><wait>",
         "/etc/init.d/sshd start<enter><wait>"
       ],
-      "boot_wait": "10s",
-      "disk_size": 20280,
+      "disk_size": 81920,
       "guest_os_type": "other26xlinux-64",
       "iso_url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/20131010/install-amd64-minimal-20131010.iso",
       "ssh_username": "root",

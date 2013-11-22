@@ -8,7 +8,6 @@
         "scripts/virtualbox.sh",
         "scripts/ruby.sh",
         "scripts/puppet.sh",
-        "scripts/chef.sh",
         "scripts/cleanup-virtualbox.sh",
         "scripts/cleanup.sh",
         "scripts/zerodisk.sh"
@@ -44,7 +43,6 @@
         "keyboard-configuration/xkb-keymap=us <wait>",
         "<enter><wait>"
       ],
-      "boot_wait": "10s",
       "disk_size": 10140,
       "guest_os_type": "Debian_64",
       "http_directory": "http",
@@ -59,18 +57,8 @@
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
       "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "256"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "1"
-        ]
+        [ "modifyvm", "{{.Name}}", "--memory", "512" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
       ]
     },
     {
@@ -92,7 +80,6 @@
         "keyboard-configuration/xkb-keymap=us <wait>",
         "<enter><wait>"
       ],
-      "boot_wait": "10s",
       "disk_size": 10140,
       "guest_os_type": "debian5-64",
       "http_directory": "http",
@@ -105,7 +92,7 @@
       "ssh_wait_timeout": "10000s",
       "shutdown_command": "echo 'halt -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
       "vmx_data": {
-        "memsize": "256",
+        "memsize": "512",
         "numvcpus": "1",
         "cpuid.coresPerSocket": "1"
       }

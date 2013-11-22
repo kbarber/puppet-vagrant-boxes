@@ -45,12 +45,7 @@ make -DBATCH package clean
 cd /usr/ports/devel/ruby-gems
 make install -DBATCH
 
-#Need ruby iconv in order for chef to run
-cd /usr/ports/converters/ruby-iconv
-make install -DBATCH
-
-#Installing chef & Puppet
-/usr/local/bin/gem install chef --no-ri --no-rdoc
+#Installing Puppet
 /usr/local/bin/gem install puppet --no-ri --no-rdoc
 
 #Installing vagrant keys

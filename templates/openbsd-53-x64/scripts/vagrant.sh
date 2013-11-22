@@ -9,9 +9,8 @@ echo " "
 groupadd puppet
 useradd -g puppet -d /var/lib/puppet -s /usr/bin/false puppet
 
-# Add groups puppet and chef
+# Add groups puppet
 groupadd puppet
-groupadd chef
 
 # setup the vagrant key
 # you can replace this key-pair with your own generated ssh key-pair
