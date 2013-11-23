@@ -1,26 +1,12 @@
 {
-  "provisioners": [
-    {
-      "type": "shell",
-      "scripts": [
-        "scripts/base.sh",
-        "scripts/ruby.sh",
-        "scripts/puppet.sh",
-        "scripts/vagrant.sh",
-        "scripts/virtualbox.sh",
-        "scripts/cleanup.sh",
-        "scripts/zerodisk.sh"
-      ],
-      "override": {
-        "virtualbox": {
-          "execute_command": "echo 'veewee'|sudo -S sh '{{.Path}}'"
-        },
-        "vmware": {
-          "execute_command": "echo 'veewee'|sudo -S sh '{{.Path}}'"
-        }
-      }
-    }
-  ],
+  "variables": {
+    "memory": "512",
+    "vcpus": "1",
+    "username": "veewee",
+    "password": "veewee",
+    "iso_url": "http://www.mirrorservice.org/sites/mirror.centos.org/6.4/isos/x86_64/CentOS-6.4-x86_64-netinstall.iso",
+    "iso_checksum": "bb9af2aea1344597e11070abe6b1fcd3"
+  },
   "builders": [
     {
       "type": "virtualbox",
@@ -28,22 +14,17 @@
       "boot_command": [
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
       ],
-      "disk_size": 10140,
       "guest_os_type": "RedHat_64",
       "http_directory": "http",
-      "iso_checksum": "bb9af2aea1344597e11070abe6b1fcd3",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
-      "iso_url": "http://www.mirrorservice.org/sites/mirror.centos.org/6.4/isos/x86_64/CentOS-6.4-x86_64-netinstall.iso",
-      "ssh_username": "veewee",
-      "ssh_password": "veewee",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'veewee'|sudo -S sh 'shutdown.sh'",
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "virtualbox_version_file": ".vbox_version",
+      "iso_url": "{{user `iso_url`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo '{{user `password`}}'|sudo -S sh 'shutdown.sh'",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "512" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `vcpus`}}" ]
       ]
     },
     {
@@ -51,22 +32,46 @@
       "boot_command": [
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
       ],
-      "disk_size": 10140,
       "guest_os_type": "rhel6-64",
       "http_directory": "http",
-      "iso_checksum": "bb9af2aea1344597e11070abe6b1fcd3",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
-      "iso_url": "http://www.mirrorservice.org/sites/mirror.centos.org/6.4/isos/x86_64/CentOS-6.4-x86_64-netinstall.iso",
-      "ssh_username": "veewee",
-      "ssh_password": "veewee",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'veewee'|sudo -S sh 'shutdown.sh'",
+      "iso_url": "{{user `iso_url`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo '{{user `password`}}'|sudo -S sh 'shutdown.sh'",
       "vmx_data": {
-        "memsize": "512",
-        "numvcpus": "1",
-        "cpuid.coresPerSocket": "1"
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `vcpus`}}"
       }
     }
-  ]
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": ["scripts/base.sh", "scripts/vagrant.sh"],
+      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
+    },
+    {
+      "type": "shell",
+      "only": ["virtualbox"],
+      "scripts": ["scripts/virtualbox.sh"],
+      "environment_vars": [
+        "p_username={{user `username`}}",
+        "p_password={{user `password`}}"
+      ],
+      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
+    },
+    {
+      "type": "shell",
+      "scripts": ["scripts/ruby.sh", "scripts/puppet.sh"],
+      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
+    },
+    {
+      "type": "shell",
+      "scripts": ["scripts/cleanup.sh", "scripts/zerodisk.sh"],
+      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
+    }
+  ],
+  "post-processors": ["vagrant"]
 }
