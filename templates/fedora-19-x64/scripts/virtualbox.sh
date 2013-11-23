@@ -1,4 +1,6 @@
 # Installing the virtualbox guest additions
-mount /dev/sr1 /mnt
+cd /tmp
+mount -o loop ~/VBoxGuestAdditions.iso /mnt
 sh /mnt/VBoxLinuxAdditions.run
 umount /mnt
+rm -rf ~/VBoxGuestAdditions.iso

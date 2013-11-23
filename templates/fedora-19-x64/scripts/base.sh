@@ -7,3 +7,6 @@ sed -i "s/enabled=0/enabled=1/" /etc/yum.repos.d/fedora-updates-testing.repo
 # but VirtualBox tools get compiled against the old kernel, so the fresh
 # image will refuse to start under Vagrant.
 yum -y update --exclude kernel*
+
+# Make ssh quicker in disconnected situations.
+echo 'UseDNS no' >> /etc/ssh/sshd_config

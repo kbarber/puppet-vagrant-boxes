@@ -1,7 +1,6 @@
 # Update the box
 apt-get -y update
 apt-get -y install linux-headers-$(uname -r) build-essential zlib1g-dev libssl-dev libreadline5-dev curl unzip
-apt-get clean
 
 # Set up sudo
 cp /etc/sudoers /etc/sudoers.orig

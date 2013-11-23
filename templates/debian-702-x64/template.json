@@ -1,27 +1,14 @@
 {
-  "provisioners": [
-    {
-      "type": "shell",
-      "scripts": [
-        "scripts/base.sh",
-        "scripts/vagrant.sh",
-        "scripts/virtualbox.sh",
-        "scripts/ruby.sh",
-        "scripts/puppet.sh",
-        "scripts/cleanup-virtualbox.sh",
-        "scripts/cleanup.sh",
-        "scripts/zerodisk.sh"
-      ],
-      "override": {
-        "virtualbox": {
-          "execute_command": "echo 'vagrant'|sudo -S bash '{{.Path}}'"
-        },
-        "vmware": {
-          "execute_command": "echo 'vagrant'|sudo -S bash '{{.Path}}'"
-        }
-      }
-    }
-  ],
+  "variables": {
+    "name": "debian-702-x64",
+    "memory": "512",
+    "vcpus": "1",
+    "username": "root",
+    "password": "root",
+    "iso_checksum": "b86774fe4de88be6378ba3d71b8029bd",
+    "iso_url": "http://cdimage.debian.org/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-netinst.iso",
+    "shutdown_command": "shutdown -h now"
+  },
   "builders": [
     {
       "type": "virtualbox",
@@ -43,23 +30,20 @@
         "keyboard-configuration/xkb-keymap=us <wait>",
         "<enter><wait>"
       ],
-      "disk_size": 10140,
       "guest_os_type": "Debian_64",
+      "headless": true,
       "http_directory": "http",
-      "iso_checksum": "b86774fe4de88be6378ba3d71b8029bd",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
-      "iso_url": "http://cdimage.debian.org/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-netinst.iso",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo 'halt -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "virtualbox_version_file": ".vbox_version",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "512" ],
-        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
-      ]
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `vcpus`}}" ]
+      ],
+      "vm_name": "packer-virtualbox-{{user `name`}}"
     },
     {
       "type": "vmware",
@@ -80,22 +64,34 @@
         "keyboard-configuration/xkb-keymap=us <wait>",
         "<enter><wait>"
       ],
-      "disk_size": 10140,
       "guest_os_type": "debian5-64",
       "http_directory": "http",
-      "iso_checksum": "b86774fe4de88be6378ba3d71b8029bd",
+      "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
-      "iso_url": "http://cdimage.debian.org/debian-cd/7.2.0/amd64/iso-cd/debian-7.2.0-amd64-netinst.iso",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo 'halt -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
       "vmx_data": {
-        "memsize": "512",
-        "numvcpus": "1",
-        "cpuid.coresPerSocket": "1"
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `vcpus`}}"
       }
     }
-  ]
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": ["scripts/base.sh", "scripts/vagrant.sh"]
+    },
+    {
+      "type": "shell",
+      "only": ["virtualbox"],
+      "scripts": ["scripts/virtualbox.sh"]
+    },
+    {
+      "type": "shell",
+      "scripts": ["scripts/cleanup.sh", "scripts/zerodisk.sh"]
+    }
+  ],
+  "post-processors": ["vagrant"]
 }
