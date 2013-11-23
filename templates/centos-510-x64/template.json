@@ -1,11 +1,13 @@
 {
   "variables": {
+    "name": "centos-510-x64",
     "memory": "512",
     "vcpus": "1",
-    "username": "vagrant",
-    "password": "vagrant",
+    "username": "root",
+    "password": "root",
     "iso_url": "http://mirrors.kernel.org/centos/5.10/isos/x86_64/CentOS-5.10-x86_64-netinstall.iso",
     "iso_checksum": "e09e44f04f0a4b97b04935e0ba88833f",
+    "shutdown_command": "shutdown -h now"
   },
   "builders": [
     {
@@ -27,7 +29,8 @@
         [ "modifyvm", "{{.Name}}", "--cpus", "{{user `vcpus`}}" ],
         [ "modifyvm", "{{.Name}}", "--pae", "on" ],
         [ "modifyvm", "{{.Name}}", "--ioapic", "on" ]
-      ]
+      ],
+      "vm_name": "packer-virtualbox-{{user `name`}}"
     },
     {
       "type": "vmware",
@@ -51,28 +54,16 @@
   "provisioners": [
     {
       "type": "shell",
-      "scripts": ["scripts/base.sh", "scripts/vagrant.sh"],
-      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
+      "scripts": ["scripts/base.sh", "scripts/vagrant.sh"]
     },
     {
       "type": "shell",
       "only": ["virtualbox"],
-      "scripts": ["scripts/virtualbox.sh"],
-      "environment_vars": [
-        "p_username={{user `username`}}",
-        "p_password={{user `password`}}"
-      ],
-      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
+      "scripts": ["scripts/virtualbox.sh"]
     },
     {
       "type": "shell",
-      "scripts": ["scripts/ruby.sh", "scripts/puppet.sh"],
-      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
-    },
-    {
-      "type": "shell",
-      "scripts": ["scripts/cleanup.sh", "scripts/zerodisk.sh"],
-      "execute_command": "echo '{{user `password`}}'|sudo -S sh {{.Vars}} '{{.Path}}'"
+      "scripts": ["scripts/cleanup.sh", "scripts/zerodisk.sh"]
     }
   ],
   "post-processors": ["vagrant"]
