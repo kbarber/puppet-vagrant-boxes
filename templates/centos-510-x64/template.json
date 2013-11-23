@@ -5,25 +5,25 @@
     "vcpus": "1",
     "username": "root",
     "password": "root",
-    "iso_url": "http://mirrors.kernel.org/centos/5.10/isos/x86_64/CentOS-5.10-x86_64-netinstall.iso",
+    "iso_url": "http://www.mirrorservice.org/sites/mirror.centos.org/5.10/isos/x86_64/CentOS-5.10-x86_64-netinstall.iso",
     "iso_checksum": "e09e44f04f0a4b97b04935e0ba88833f",
     "shutdown_command": "shutdown -h now"
   },
   "builders": [
     {
       "type": "virtualbox",
-      "headless": true,
       "boot_command": [
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
       ],
       "guest_os_type": "RedHat_64",
+      "headless": true,
       "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
       "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
       "ssh_username": "{{user `username`}}",
       "ssh_password": "{{user `password`}}",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo '{{user `password`}}'|sudo -S sh 'shutdown.sh'",
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "{{user `vcpus`}}" ],
@@ -38,17 +38,20 @@
         "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
       ],
       "guest_os_type": "rhel6-64",
+      "headless": true,
       "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
       "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
       "ssh_username": "{{user `username`}}",
       "ssh_password": "{{user `password`}}",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo '{{user `password`}}'|sudo -S sh 'shutdown.sh'",
+      "tools_upload_flavour": "linux",
       "vmx_data": {
         "memsize": "{{user `memory`}}",
         "numvcpus": "{{user `vcpus`}}"
-      }
+      },
+      "vm_name": "packer-vmware-{{user `name`}}"
     }
   ],
   "provisioners": [
@@ -60,6 +63,11 @@
       "type": "shell",
       "only": ["virtualbox"],
       "scripts": ["scripts/virtualbox.sh"]
+    },
+    {
+      "type": "shell",
+      "only": ["vmware"],
+      "scripts": ["scripts/vmfusion.sh"]
     },
     {
       "type": "shell",

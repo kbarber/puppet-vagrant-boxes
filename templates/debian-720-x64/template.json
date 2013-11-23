@@ -1,6 +1,6 @@
 {
   "variables": {
-    "name": "debian-702-x64",
+    "name": "debian-720-x64",
     "memory": "512",
     "vcpus": "1",
     "username": "root",
