@@ -4,21 +4,7 @@ This repository contains definitions and files necessary for recreating the imag
 
 ## Environment setup
 
-You'll need Ruby 1.9.3 and Bundler before you begin. And a copy of packer here:
-
-<http://www.packer.io/>
-
-Start by entering the directory where you have cloned this project:
-
-    $ cd <path to repo>
-
-*Optional* Create an RVM gemset:
-
-    $ rvm --create --ruby-version use ruby-1.9.3@puppet-vagrant-boxes
-
-Then install the bundle:
-
-    $ bundle install
+Install a copy of Packer, at least 0.4.0.
 
 ## Adding a new template
 
@@ -33,19 +19,13 @@ Make sure the folder name follows the convention:
     * for ubuntu: svr, dtop (used to be server, desktop)
 * version: 8, 2008, 1104
 * arch: x64, i386
-* virtual-type: type & version.
-    * vbXXXX: virtualbox + version (used to be vboxXXX)
-    * vfXXX: vmware fusion + version (used to be fusionXXX)
-* variant (optional):
-    * nocm: designates no configuration management tools were loaded
 
 Examples:
 
-    ubuntu-svr-1104-x64-vb4210
-    centos-58-i386-vb4210
-    windows-2008r2-x64-vb4210
-    debian-607-x64-vb4210-nocm
-    centos-64-x64-vf503
+    ubuntu-svr-1104-x64
+    centos-58-i386
+    windows-2008r2-x64
+    centos-64-x64
 
 ## Building a box
 
@@ -54,7 +34,7 @@ Finally, follow the next steps for building a box.
 Pick a box to build:
 
     $ cd templates/freebsd-92-x64
-    $ packer --only=virtualbox template.json
+    $ packer --only=virtualbox -force template.json
 
 ## Publishing to S3
 
