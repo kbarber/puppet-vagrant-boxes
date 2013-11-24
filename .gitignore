@@ -8,3 +8,4 @@ vendor/
 Gemfile.lock
 packer_cache
 output-virtualbox
+crash.log
