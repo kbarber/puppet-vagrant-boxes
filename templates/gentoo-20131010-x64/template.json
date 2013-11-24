@@ -1,0 +1,110 @@
+{
+  "variables": {
+    "name": "gentoo-20131010-x64",
+    "memory": "512",
+    "vcpus": "1",
+    "username": "root",
+    "password": "root",
+    "iso_url": "http://distfiles.gentoo.org/releases/amd64/autobuilds/20131010/install-amd64-minimal-20131010.iso",
+    "iso_checksum": "485f690d92d3fa197d493ced18275781",
+    "shutdown_command": "shutdown -h now"
+  },
+  "builders": [
+    {
+      "type": "virtualbox",
+      "headless": true,
+      "boot_command": [
+        "<wait><wait><wait>",
+        "gentoo-nofb<enter><wait>",
+        "<wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+        "<enter><wait>",
+        "<wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+        "passwd<enter><wait><wait><wait>",
+        "vagrant<enter><wait><wait>",
+        "vagrant<enter><wait><wait>",
+        "/etc/init.d/sshd start<enter><wait>"
+      ],
+      "guest_os_type": "Gentoo_64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "md5",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `vcpus`}}" ]
+      ],
+      "vm_name": "packer-virtualbox-{{user `name`}}"
+    },
+    {
+      "type": "vmware",
+      "boot_command": [
+        "<wait><wait><wait>",
+        "gentoo-nofb<enter><wait>",
+        "<wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+        "<enter><wait>",
+        "<wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+        "passwd<enter><wait><wait><wait>",
+        "vagrant<enter><wait><wait>",
+        "vagrant<enter><wait><wait>",
+        "/etc/init.d/sshd start<enter><wait>"
+      ],
+      "guest_os_type": "other26xlinux-64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "md5",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "tools_upload_flavour": "linux",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `vcpus`}}"
+      },
+      "vm_name": "packer-vmware-{{user `name`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/settings.sh",
+        "scripts/base.sh",
+        "scripts/kernel.sh",
+        "scripts/usb.sh",
+        "scripts/git.sh",
+        "scripts/subversion.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "only": ["virtualbox"],
+      "scripts": ["scripts/virtualbox.sh"]
+    },
+    {
+      "type": "shell",
+      "only": ["vmware"],
+      "scripts": ["scripts/vmfusion.sh"]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/vagrant.sh",
+        "scripts/add_vim.sh",
+        "scripts/cron.sh",
+        "scripts/syslog.sh",
+        "scripts/nfs.sh",
+        "scripts/grub.sh",
+        "scripts/wipe_sources.sh",
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh",
+        "scripts/reboot.sh"
+      ]
+    }
+  ]
+}

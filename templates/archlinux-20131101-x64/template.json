@@ -1,23 +1,28 @@
 {
   "variables": {
-    "name": "sl-64-x64",
+    "name": "archlinux-20131101-x64",
     "memory": "512",
     "vcpus": "1",
     "username": "root",
     "password": "root",
-    "iso_checksum": "e9625e2c3b4b02d94ffa478773d5d58f",
-    "iso_url": "http://ftp.heanet.ie/pub/rsync.scientificlinux.org/6.4/x86_64/iso/SL-64-x86_64-2013-03-18-boot.iso",
+    "iso_checksum": "2535d1308fcc4f12420433dba039b3b6",
+    "iso_url": "http://mirrors.kernel.org/archlinux/iso/latest/archlinux-2013.11.01-dual.iso",
     "shutdown_command": "shutdown -h now"
   },
   "builders": [
     {
       "type": "virtualbox",
       "boot_command": [
-        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+        "<enter><wait>",
+        "<wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+        "echo \"sshd: ALL\" > /etc/hosts.allow<enter><wait>",
+        "passwd<enter><wait>",
+        "root<enter><wait>",
+        "root<enter><wait>",
+        "systemctl start sshd.service<enter><wait><wait>"
       ],
-      "guest_os_type": "RedHat_64",
+      "guest_os_type": "ArchLinux_64",
       "headless": true,
-      "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
       "iso_url": "{{user `iso_url`}}",
@@ -33,11 +38,16 @@
     {
       "type": "vmware",
       "boot_command": [
-        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+        "<enter><wait>",
+        "<wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+        "echo \"sshd: ALL\" > /etc/hosts.allow<enter><wait>",
+        "passwd<enter><wait>",
+        "root<enter><wait>",
+        "root<enter><wait>",
+        "systemctl start sshd.service<enter><wait><wait>"
       ],
-      "guest_os_type": "RedHat_64",
+      "guest_os_type": "other26xlinux-64",
       "headless": true,
-      "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
       "iso_url": "{{user `iso_url`}}",
@@ -55,7 +65,16 @@
   "provisioners": [
     {
       "type": "shell",
-      "scripts": ["scripts/base.sh", "scripts/vagrant.sh"]
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/pacman.sh",
+        "scripts/bootloader.sh",
+        "scripts/ssh.sh",
+        "scripts/reboot.sh",
+        "scripts/basedevel.sh",
+        "scripts/sudo.sh",
+        "scripts/aur.sh"
+      ]
     },
     {
       "type": "shell",
@@ -69,8 +88,12 @@
     },
     {
       "type": "shell",
-      "scripts": ["scripts/cleanup.sh", "scripts/zerodisk.sh"]
+      "scripts": [
+        "scripts/vagrant.sh",
+        "scripts/reboot.sh",
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ]
     }
-  ],
-  "post-processors": ["vagrant"]
+  ]
 }

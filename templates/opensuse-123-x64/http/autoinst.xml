@@ -203,7 +203,7 @@
     </user>
     <user>
       <username>root</username>
-      <user_password>vagrant</user_password>
+      <user_password>root</user_password>
       <encrypted config:type="boolean">false</encrypted>
       <shell>/bin/bash</shell>
     </user>

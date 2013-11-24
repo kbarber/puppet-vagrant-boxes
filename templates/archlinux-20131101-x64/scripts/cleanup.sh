@@ -16,3 +16,7 @@ pacman -Scc<<EOF
 y
 y
 EOF
+
+# Delete all veewee related files that were copied over, including this script
+rm -rf /root/{*,.v*}
+rm -rf /tmp/*
