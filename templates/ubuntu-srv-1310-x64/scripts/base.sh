@@ -1,5 +1,5 @@
 apt-get -y update
-apt-get -y install linux-headers-$(uname -r) build-essential zlib1g-dev libssl-dev libreadline5-dev curl unzip
+apt-get -y install linux-headers-$(uname -r) build-essential zlib1g-dev libssl-dev libreadline-gplv2-dev libyaml-dev curl wget
 
 # Setup sudo to allow no-password sudo for "admin"
 cp /etc/sudoers /etc/sudoers.orig
