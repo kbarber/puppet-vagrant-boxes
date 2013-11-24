@@ -12,7 +12,6 @@
   "builders": [
     {
       "type": "virtualbox",
-      "headless": true,
       "boot_command": [
         "<tab> linux text net.ifnames=0 biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><enter><wait>"
       ],
@@ -37,6 +36,7 @@
         "<tab> linux text net.ifnames=0 biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><enter><wait>"
       ],
       "guest_os_type": "fedora-64",
+      "headless": true,
       "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "md5",
@@ -44,10 +44,12 @@
       "shutdown_command": "{{user `shutdown_command`}}",
       "ssh_username": "{{user `username`}}",
       "ssh_password": "{{user `password`}}",
+      "tools_upload_flavour": "linux",
       "vmx_data": {
         "memsize": "{{user `memory`}}",
         "numvcpus": "{{user `vcpus`}}"
-      }
+      },
+      "vm_name": "packer-vmware-{{user `name`}}"
     }
   ],
   "provisioners": [
@@ -59,6 +61,11 @@
       "type": "shell",
       "only": ["virtualbox"],
       "scripts": ["scripts/virtualbox.sh"]
+    },
+    {
+      "type": "shell",
+      "only": ["vmware"],
+      "scripts": ["scripts/vmfusion.sh"]
     },
     {
       "type": "shell",
