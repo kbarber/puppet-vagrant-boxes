@@ -1,4 +1,14 @@
 {
+  "variables": {
+    "name": "solaris-10u11-x64",
+    "memory": "768",
+    "vcpus": "1",
+    "username": "vagrant",
+    "password": "vagrant",
+    "iso_url": "sol-10-u11-ga-x86-dvd.iso",
+    "iso_checksum": "aae1452bb3d56baa3dcb8866ce7e4a08",
+    "shutdown_command": "echo '/usr/sbin/poweroff' > shutdown.sh; pfexec bash -l shutdown.sh"
+  },
   "provisioners": [
     {
       "type": "shell",
@@ -20,6 +30,7 @@
   "builders": [
     {
       "type": "virtualbox",
+      "vm_name": "packer-virtualbox-{{user `name`}}",
       "boot_command": [
         "e<wait>",
         "e<wait>",
@@ -27,8 +38,6 @@
         "- nowin install -B install_media=cdrom<enter><wait>",
         "b<wait>"
       ],
-      "boot_wait": "10s",
-      "disk_size": 65140,
       "floppy_files": [
         "floppy/sysidcfg",
         "floppy/rules",
@@ -38,39 +47,20 @@
         "floppy/finish"
       ],
       "guest_os_type": "Solaris_64",
-      "iso_checksum": "aae1452bb3d56baa3dcb8866ce7e4a08",
+      "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "md5",
-      "iso_url": "",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/usr/sbin/poweroff' > shutdown.sh; pfexec bash -l shutdown.sh",
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "virtualbox_version_file": ".vbox_version",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
       "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "768"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "1"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--hwvirtex",
-          "on"
-        ]
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `vcpus`}}" ]
       ]
     },
     {
       "type": "vmware",
+      "vm_name": "packer-vmware-{{user `name`}}",
       "boot_command": [
         "e<wait>",
         "e<wait>",
@@ -78,8 +68,6 @@
         "- nowin install -B install_media=cdrom<enter><wait>",
         "b<wait>"
       ],
-      "boot_wait": "10s",
-      "disk_size": 65140,
       "floppy_files": [
         "floppy/sysidcfg",
         "floppy/rules",
@@ -89,17 +77,15 @@
         "floppy/finish"
       ],
       "guest_os_type": "solaris10-64",
-      "iso_checksum": "aae1452bb3d56baa3dcb8866ce7e4a08",
+      "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "md5",
-      "iso_url": "",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/usr/sbin/poweroff' > shutdown.sh; pfexec bash -l shutdown.sh",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
       "vmx_data": {
-        "memsize": "768",
-        "numvcpus": "1",
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `vcpus`}}",
         "cpuid.coresPerSocket": "1"
       }
     }
