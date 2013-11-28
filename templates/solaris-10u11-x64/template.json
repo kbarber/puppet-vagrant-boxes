@@ -3,30 +3,12 @@
     "name": "solaris-10u11-x64",
     "memory": "768",
     "vcpus": "1",
-    "username": "vagrant",
-    "password": "vagrant",
+    "username": "root",
+    "password": "root",
     "iso_url": "sol-10-u11-ga-x86-dvd.iso",
     "iso_checksum": "aae1452bb3d56baa3dcb8866ce7e4a08",
-    "shutdown_command": "echo '/usr/sbin/poweroff' > shutdown.sh; pfexec bash -l shutdown.sh"
+    "shutdown_command": "/usr/sbin/poweroff"
   },
-  "provisioners": [
-    {
-      "type": "shell",
-      "scripts": [
-        "scripts/postinstall.sh",
-        "scripts/update-terminfo.sh",
-        "scripts/cleanup.sh"
-      ],
-      "override": {
-        "virtualbox": {
-          "execute_command": "pfexec bash -l {{.Path}}"
-        },
-        "vmware": {
-          "execute_command": "pfexec bash -l {{.Path}}"
-        }
-      }
-    }
-  ],
   "builders": [
     {
       "type": "virtualbox",
@@ -77,6 +59,7 @@
         "floppy/finish"
       ],
       "guest_os_type": "solaris10-64",
+      "tools_upload_flavor": "solaris",
       "iso_url": "{{user `iso_url`}}",
       "iso_checksum_type": "md5",
       "iso_checksum": "{{user `iso_checksum`}}",
@@ -89,5 +72,33 @@
         "cpuid.coresPerSocket": "1"
       }
     }
-  ]
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/vagrant.sh",
+        "scripts/update-terminfo.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "scripts": ["scripts/virtualbox.sh"],
+      "only": ["virtualbox"]
+    },
+    {
+      "type": "shell",
+      "scripts": ["scripts/vmware.sh"],
+      "only": ["vmware"]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ]
+    }
+  ],
+  "post-processors": ["vagrant"]
 }
