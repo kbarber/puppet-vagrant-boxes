@@ -37,6 +37,16 @@ package      SUNWtoo add
 package      SUNWlibm add
 package      SUNWgccruntime add
 
+# Zone Support
+package  SUNWpool   add
+package  SUNWpoolr  add
+package  SUNWlur    add
+package  SUNWluu    add
+package  SUNWlucfg  add
+package  SUNWluzone add
+package  SUNWzoner  add
+package  SUNWzoneu  add
+
 # BSD compatibility
 package      SUNWscpu add
 
