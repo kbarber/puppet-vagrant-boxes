@@ -1,0 +1,104 @@
+{
+  "variables": {
+    "name": "solaris-10u11-x64",
+    "memory": "768",
+    "vcpus": "1",
+    "username": "root",
+    "password": "root",
+    "iso_url": "sol-10-u11-ga-x86-dvd.iso",
+    "iso_checksum": "aae1452bb3d56baa3dcb8866ce7e4a08",
+    "shutdown_command": "/usr/sbin/poweroff"
+  },
+  "builders": [
+    {
+      "type": "virtualbox",
+      "vm_name": "packer-virtualbox-{{user `name`}}",
+      "boot_command": [
+        "e<wait>",
+        "e<wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
+        "- nowin install -B install_media=cdrom<enter><wait>",
+        "b<wait>"
+      ],
+      "floppy_files": [
+        "floppy/sysidcfg",
+        "floppy/rules",
+        "floppy/rules.ok",
+        "floppy/begin",
+        "floppy/profile",
+        "floppy/finish"
+      ],
+      "guest_os_type": "Solaris_64",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{user `vcpus`}}" ]
+      ]
+    },
+    {
+      "type": "vmware",
+      "vm_name": "packer-vmware-{{user `name`}}",
+      "boot_command": [
+        "e<wait>",
+        "e<wait>",
+        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><wait>",
+        "- nowin install -B install_media=cdrom<enter><wait>",
+        "b<wait>"
+      ],
+      "floppy_files": [
+        "floppy/sysidcfg",
+        "floppy/rules",
+        "floppy/rules.ok",
+        "floppy/begin",
+        "floppy/profile",
+        "floppy/finish"
+      ],
+      "guest_os_type": "solaris10-64",
+      "tools_upload_flavor": "solaris",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "shutdown_command": "{{user `shutdown_command`}}",
+      "vmx_data": {
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `vcpus`}}",
+        "cpuid.coresPerSocket": "1"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/base.sh",
+        "scripts/vagrant.sh",
+        "scripts/update-terminfo.sh"
+      ]
+    },
+    {
+      "type": "shell",
+      "scripts": ["scripts/virtualbox.sh"],
+      "only": ["virtualbox"]
+    },
+    {
+      "type": "shell",
+      "scripts": ["scripts/vmware.sh"],
+      "only": ["vmware"]
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ]
+    }
+  ],
+  "post-processors": ["vagrant"]
+}
